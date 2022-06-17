@@ -31,11 +31,10 @@ const planoDeFundo= {
             planoDeFundo.x+planoDeFundo.largura, planoDeFundo.y,
             planoDeFundo.largura, planoDeFundo.altura,
         );
-
     },
 }
 
-//chao
+//CHÃO
 const chao = {
     spriteX: 0,
     spriteY: 610,
@@ -51,17 +50,17 @@ const chao = {
         chao.x, chao.y,
         chao.largura, chao.altura,
         );
-         contexto.drawImage(
-             sprites,
-             chao.spriteX, chao.spriteY,
-             chao.largura, chao.altura,
-             chao.x+chao.largura, chao.y,
-             chao.largura, chao.altura,
-        );
+          contexto.drawImage(
+              sprites,
+              chao.spriteX, chao.spriteY,
+              chao.largura, chao.altura,
+              chao.x+chao.largura, chao.y,
+              chao.largura, chao.altura,
+         );
     },
 };
 
-//chao
+//INICIO
 const mensagemGetREady = {
     sX: 134,
     sY: 0,
@@ -79,7 +78,7 @@ const mensagemGetREady = {
     },
 };
 
-// ]flappyBird
+// FLAPPYBIRD
 //object = struc do c#
 const flappyBird = {
     spriteX: 0,
@@ -93,7 +92,6 @@ const flappyBird = {
     atualiza(){
         flappyBird.velocidade = flappyBird.velocidade + flappyBird.gravidade;
         flappyBird.y = flappyBird.y + flappyBird.velocidade;
-
     },
     desenha(){
         contexto.drawImage(
