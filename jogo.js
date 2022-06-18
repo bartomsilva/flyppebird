@@ -5,12 +5,6 @@ console.log('[DevSoutinho] Flappy Bird');
 const som_HIT = new Audio();
 som_HIT.src ='./efeitos/hit.wav';
 
-
-
-
-
-
-
 // serve para parar algum movimento  - chão e etc
 let morreu=false;
 let frames=0;
