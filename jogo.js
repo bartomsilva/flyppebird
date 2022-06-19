@@ -9,6 +9,8 @@ som_HIT.src ='./efeitos/hit.wav';
 let morreu=false;
 let frames=0;
 let telaAtiva = {};
+let velocidadeCanos=300;
+let velocidadePontuacao=25;
 
 const globais = {};
 const sprites = new Image();
@@ -229,13 +231,11 @@ function criaCanos(){
         },
         pares: [],    
         atualiza(){
-            const passou100frames = ( frames % 100 === 0 );
+            const passou100frames = ( frames % velocidadeCanos === 0 );
             if (passou100frames){
                 canos.pares.push({
                     x: canvas.width,
                     y: -150 * (Math.random()+1),   
-                    //ydoCeu:0, DEPURANDO
-                    //ydoChao:0,DEPURANDO                                  
                 });
             }
 
@@ -276,7 +276,7 @@ function criaCanos(){
 
 function criaPlacar(){
     const placar = {
-        pontuacao:1111111110,
+        pontuacao:0,
         desenha(){
             contexto.font = '30px VT323';
             contexto.fillStyle = '#fff';
@@ -284,6 +284,8 @@ function criaPlacar(){
             contexto.fillText(`${placar.pontuacao}`, canvas.width-5,35);
         },
         atualiza(){
+            
+            contexto.fillText(`${placar.pontuacao}`, canvas.width-5,35);
         },
     }
     
@@ -325,7 +327,6 @@ const Telas = {
     JOGO: {
         inicializa(){
             globais.placar = criaPlacar();
-
         },
         desenha() {
             planoDeFundo.desenha();
@@ -362,6 +363,29 @@ function loop(){
     requestAnimationFrame(loop);
   }
 
+//////////////////////
+function pontuacao(){
+//////////////////////
+    let pontuacao;
+
+    if (frames % velocidadePontuacao ===0){     
+        globais.placar.pontuacao++;
+        pontuacao =globais.placar.pontuacao;
+        if (pontuacao>100 && pontuacao<200){
+            velocidadeCanos=200;
+            velocidadePontuacao=15;
+        } else if (pontuacao>200 && pontuacao<500){
+            velocidadeCanos=100;
+            velocidadePontuacao=10;
+        } else if (pontuacao>500){
+            velocidadeCanos=90;
+            velocidadePontuacao=3;
+        }      
+        globais.placar.atualiza();
+     }
+  }
+
+  
 /////////////////////////
 // ativando metodo CLICK
 /////////////////////////
@@ -410,6 +434,7 @@ function colisaoCanos(xCano){
             return true;        
         }
     }
+    pontuacao();
     
     return false;
 }
