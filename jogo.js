@@ -1,11 +1,12 @@
 console.log('[DevSoutinho] Flappy Bird');
+console.log('[bart silva] ajustes e novas conf');
 //////////////////////
 /////////////////////
 //som do impacto no chão / 
-const som_HIT = new Audio();
+let som_HIT = new Audio();
 som_HIT.src ='./efeitos/hit.wav';
-const som_PONTO = new Audio();
-som_HIT.src ='./efeitos/ponto.wav';
+let som_PONTO = new Audio();
+som_PONTO.src ='./efeitos/ponto.wav';
 
 // serve para parar algum movimento  - chão e etc
 let morreu=false;
@@ -13,6 +14,8 @@ let frames=0;
 let telaAtiva = {};
 let velocidadeCanos=300; // tempo para desenhar um novo cano
 let velocidadePontuacao=25; // frames para pontuar +1
+let salvaplacar=true;
+let nvidas=3;
 
 const globais = {};
 const sprites = new Image();
@@ -20,8 +23,6 @@ sprites.src = './spritesp.png'; // pesonalizado
 
 const canvas = document.querySelector('canvas');
 const contexto = canvas.getContext('2d');
-
-
 
 
 /////////////////////////////////////////
@@ -94,8 +95,8 @@ const mensagemGameOver = {
 };
 
 //////////
-// CHÃO
-/////////
+// C H Ã O 
+//////////
 const chao = {
     spriteX: 0,
     spriteY: 610,
@@ -109,17 +110,8 @@ const chao = {
             chao.x=0;
         } else {
             chao.x = chao.x - 1;  
-        }  
-    
-        contexto.font = '30px VT323';
-        contexto.fillStyle = '#0000ff';
-        contexto.textAlign = "center";
-        contexto.textAlign="center";  
-        contexto.fillText("Sua Meta", canvas.width/2,414);
-        contexto.fillStyle = '#ff0000';
-        contexto.fillText(`${placar.melhor} Pontos`, canvas.width/2,445);
-    
-
+        }     
+   
     },
     desenha() {
         contexto.drawImage(
@@ -136,6 +128,19 @@ const chao = {
              chao.x+chao.largura, chao.y,
              chao.largura, chao.altura,
          );
+         contexto.font = '30px VT323';
+         contexto.fillStyle = '#0000ff';
+         contexto.textAlign = "center";
+         contexto.fillText("Sua Meta", canvas.width/2-20,414);
+         contexto.fillStyle = '#ff0000';
+         contexto.fillText(`${placar.melhor} Pontos`, canvas.width/2-20,445);
+         
+         contexto.font = '18px VT323';
+         contexto.fillStyle = '#000000';
+         contexto.textAlign = "right";  
+         contexto.fillText("Vidas/Life", 310,419);
+         contexto.fillStyle = '#ff0000';
+         contexto.fillText(nvidas+" / 3 ", 300,438);
     },
 };
  
@@ -166,10 +171,13 @@ function criaflappyBird(){
             som_HIT.play();
             //da um delay de 1s na troca de tela.
             morreu=true;
-            mudaParaTela(Telas.GAME_OVER);                       
-       
+            nvidas--;
+            if ( nvidas<=0) {
+                mudaParaTela(Telas.GAME_OVER);                       
+            } else {
+                mudaParaTela(Telas.INICIO);
+            }
         }
-    
         flappyBird.velocidade = flappyBird.velocidade + flappyBird.gravidade;
         flappyBird.y = flappyBird.y + flappyBird.velocidade;
         },
@@ -179,7 +187,6 @@ function criaflappyBird(){
         { spriteX: 0, spriteY: 52}, // asa pra baixo
         { spriteX: 0, spriteY: 26}, // asa no meio
         { spriteX: 0, spriteY: 26}, // asa no meio - para cair
-        
     ],
     atualizaOFrameAtual(){
        if (flappyBird.xbaterdeasa == flappyBird.xfreio){    
@@ -249,8 +256,7 @@ function criaCanos(){
                 const canoChaoX = par.x;
                 const canoChaoY = canos.altura + espacamentoEntreCanos+yRamdom;
                 
-                par.ydoChao = canoChaoY;
-                
+                par.ydoChao = canoChaoY;             
                 par.ydoCeu = canoChaoY - canos.espaco;
 
                 contexto.drawImage(
@@ -284,7 +290,13 @@ function criaCanos(){
                 som_HIT.play();
                 //da um delay de 1s na troca de tela.
                 morreu=true;
-                mudaParaTela(Telas.GAME_OVER);
+                
+                nvidas--;
+                if (nvidas <=0  ){
+                    mudaParaTela(Telas.GAME_OVER);
+                } else {
+                    mudaParaTela(Telas.INICIO);
+                }
             }
              // apaga o cano na memória 
              if (par.x +canos.largura <= 0 ) {
@@ -308,11 +320,8 @@ function criaCanos(){
 
 const placar = {
     pontuacao: 0,
-    melhor: 1000,
+    melhor: 0,
     desenha(){
-        contexto.font = '30px VT323';
-        contexto.fillStyle = '#fff';
-        contexto.textAlign = "right";
     },
     atualiza(){
         contexto.font = '30px VT323';
@@ -320,29 +329,26 @@ const placar = {
         contexto.textAlign = "right";
         contexto.fillText(`${placar.pontuacao}`, canvas.width-5,35);
     },
+    //barto
     score(){
         minhapontuacao=placar.pontuacao;
         bestpontucao=placar.melhor;
-        
+        console.log("score do placar");
         contexto.font = '30px VT323';
         contexto.fillStyle = '#fff';
         contexto.textAlign = "center";
-        contexto.fillText(`${placar.pontuacao}`, 100,161);
-        contexto.fillText(`${placar.melhor}`, 231,161);
+        contexto.fillText(`${minhapontuacao}`, 100,161);
+        contexto.fillText(`${bestpontucao}`, 231,161);
         if (minhapontuacao > bestpontucao){
             console.log("esse numero "+minhapontuacao+"é maior > que esse "+bestpontucao);
             som_PONTO.play();
-            placar.melhor = minhapontuacao;
-            placar.pontuacao =0 ;
-        }
+            placar.melhor = minhapontuacao;            
+        }     
+        salvaplacar=false;
     },
-    reset(){    
-        placar.pontuacao=0;
-    },
-
 }
+ 
     
-
 
 
 /////////////////////
@@ -406,9 +412,15 @@ const Telas = {
     },
     GAME_OVER:{
         desenha(){
-            mensagemGameOver.desenha();                
+            if (salvaplacar){
+            mensagemGameOver.desenha();      
+            placar.score();
+            }
         },
         click(){    
+            salvaplacar=true;
+            placar.pontuacao=0;
+            nvidas=3;
             mudaParaTela(Telas.INICIO);
         },
         atualiza(){
@@ -430,6 +442,7 @@ function loop(){
         chao.atualiza();
         frames=0;
     }
+    
     requestAnimationFrame(loop);
   }
 
